@@ -3,33 +3,36 @@
 */
 
 #include <iostream>
-#include "SHAPE_H"
+#include "shape.h"
 
 using namespace std;
-long PI = 3.14159625;
 
-Shape::Shape(string x, double b, double h) {
-  setName(x);
+Shape::Shape(string n, double b, double h) {
+  setName(n);
   setBase(b);
   setHeight(h);
 }
 
-Shape::setName(string x) {
-  name = x;
+void Shape::setName(string n) {
+  name = n;
 }
 
-Shape::setBase(double x) {
-  base = x;
+void Shape::setBase(double b) {
+  base = b;
 }
 
-Shape::setHeight(double x) {
-  height = x;
+void Shape::setHeight(double h) {
+  height = h;
 }
 
-Shape::getName() {
+string Shape::getName() {
   return name;
 }
 
-Shape::findArea() {
-  return base * height;
+double Shape::getBase() {
+  return base;
+}
+
+double Shape::getHeight() {
+  return height;
 }
