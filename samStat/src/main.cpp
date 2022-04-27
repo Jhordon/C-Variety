@@ -3,7 +3,7 @@
     'Inspired by STOR155 - FALL 2018 course content' - @Jhordon
 */
 
-#include "sampleStats.h"
+#include "stats.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
