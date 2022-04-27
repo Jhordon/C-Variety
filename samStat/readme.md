@@ -9,11 +9,10 @@ User's can:
 
 User's may opt for either:
 
-- An 'analysisResults.txt' file
-- An 'analysisResults.csv' file
-- Or console output
+- A directory 'analysisResults' w/ .csv & .txt files
+- Or brief console output
 
-The analysis displays the following from the list provided:
+The analysis outputs the following from the list provided:
 
 - Min, Max, Median, Mode, Sum
 - Sample & Population: Standard Deviation and Mean

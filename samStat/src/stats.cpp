@@ -1,9 +1,13 @@
-/* C++: Sample Statistics
+/* C++: Sample Statistics - Object Functionality
     Generates a sample statistical analysis of a provided number list.
     'Inspired by STOR155 - FALL 2018 course content' - @Jhordon
 */
 
+
+// 'Ayo my guy you gotta clean that...'
+
 #include "stats.h"
+#include <iterator>
 #include <iostream>
 #include <fstream>
 #include <sstream>
