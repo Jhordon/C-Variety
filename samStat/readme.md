@@ -1,4 +1,4 @@
-# /samStat
+# ./samStat
 
 Prints out a sample statistical analysis of provided numerical data.
 
@@ -14,10 +14,15 @@ User's may opt for either:
 
 The analysis outputs the following from the list provided:
 
-- Min, Max, Median, Mode, Sum
-- Sample & Population: Standard Deviation and Mean
+- Min, Max, Mean, Median, Mode, Sum
+- Sample & Population Standard Deviation
 - Quartile information, inflection values, outliers
 - Common Confidence Levels with associated Confidence Interval Calculation
 - Z-Score Values following the sorted values of the list
 
 'Inspired by STOR 155 course content from FALL 2018 at UNC.'
+**Users are encouraged to check the math themselves**
+
+## How to Use
+
+    TBD
