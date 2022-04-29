@@ -4,25 +4,18 @@
 */
 
 #include "stats.h"
-#include <iterator>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <unistd.h>
-#include <math.h>
-#include <algorithm>
 
 using namespace std;
 
 InputList::InputList(int i) {
   select(i);
-  // set 'CURRENT DIRECTORY' 
 }
 
 void InputList::select(int i) {
   switch (i) {
-    case 1:
-      auto dataFile = [&]() {
+    case 1: {
+      auto dataFile = [&]()
+      {
         /*    ~Text File Entry~                            3. Upon Text File Entry...
               Searching for 'data.txt'...                       Begin a 'CURRENT DIRECTORY' search for 'data.txt'
               ---------------------------                       Print out respective messages on errors
@@ -40,38 +33,44 @@ void InputList::select(int i) {
               Would you like 'analysisResults'?
                   [y]   [n]
         */
-       string input;
-       cout << "~Text File Entry~\n";
-       sleep(1);
-       ifstream inTxt ("data.txt");
-       if (inTxt.is_open()) {
-         getline(inTxt, input);
-         stringstream line(input);
-         while (line.good()) {
-           string value;
-           getline(line, value, ' ');
-           try {
-             daValues.push_back(stod(value));
-           } catch (exception e) {
-             cout << e.what() << "\nCould not convert data value. Please format to decimal type and retry.\n";
-             return 0;
-           }
-         }
-         inTxt.close();
-         cout << "Scan Complete.\n";
-         calcStats();
-
-       } else {
+        string input;
+        cout << "~Text File Entry~\n";
+        sleep(1);
+        ifstream inTxt("data.txt");
+        if (inTxt.is_open())
+        {
+          getline(inTxt, input);
+          stringstream line(input);
+          while (line.good())
+          {
+            string value;
+            getline(line, value, ' ');
+            try
+            {
+              daValues.push_back(stod(value));
+            }
+            catch (exception e)
+            {
+              cout << e.what() << "\nCould not convert data value. Please format to decimal type and retry.\n";
+            }
+          }
+          inTxt.close();
+          cout << "Scan Complete.\n";
+          calcStats();
+        }
+        else
+        {
           cout << "Could not find 'data.txt'.\nMake sure the file is in the same location as the program.\nQuitting...\n";
-          return 0;
-       }
+        }
       };
       dataFile();
       getdaValues();
       break;
+    }  
 
-    case 2:
-      auto manEntry = [&]() {
+    case 2: {
+      auto manEntry = [&]()
+      {
         /*   ~Manual Entry~                               2. Upon Manual Entry...
              Enter your values.                               prompt the user to provide data values,
              Type 'done' when finished.                       Error check for .empty(), !ofType<'num'>, 'done'
@@ -84,26 +83,35 @@ void InputList::select(int i) {
              Would you like 'analysisResults'?
                   [y]  [n]
         */
-       string input;
-       cout << "~Manual Entry~\nEnter your values.\nType 'done' when finished.\n";
-       while (input != "done") {
-         cout << ":";
-         try {
-           getline(cin, input);
-           daValues.push_back(stod(input));
-         } catch (exception e) {
-           if (input.compare("done") == 0) {
-             cout << "Calculating...\n";
-             calcStats();
-             break;
-           } else {
+        string input;
+        cout << "~Manual Entry~\nEnter your values.\nType 'done' when finished.\n";
+        while (input != "done")
+        {
+          cout << ":";
+          try
+          {
+            getline(cin, input);
+            daValues.push_back(stod(input));
+          }
+          catch (exception e)
+          {
+            if (input.compare("done") == 0)
+            {
+              cout << "Calculating...\n";
+              calcStats();
+              break;
+            }
+            else
+            {
               cout << e.what() << "\nNumerics only please.\n";
-           }
-         }
-       }
+            }
+          }
+        }
       };
+      manEntry();
       getdaValues();
       break;
+    }
 
     default:
     cout << "That was unexpected...\n";
@@ -328,6 +336,8 @@ void InputList::calcStats() {
   leFlect = mean - popStnD;
   rtFlect = mean + popStnD;
 }
+
+
 
 /* showStats of userList
       Essential Mechanism:

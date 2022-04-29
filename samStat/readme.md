@@ -1,4 +1,4 @@
-# ./samStat
+# /samStat
 
 Prints out a sample statistical analysis of provided numerical data.
 
@@ -9,10 +9,10 @@ User's can:
 
 User's may opt for either:
 
-- A directory 'analysisResults' w/ .csv & .txt files
+- A directory 'analysisResults' w/ data.csv & analysis.txt files
 - Or brief console output
 
-The analysis outputs the following from the list provided:
+The list has the associated statistics:
 
 - Min, Max, Mean, Median, Mode, Sum
 - Sample & Population Standard Deviation
