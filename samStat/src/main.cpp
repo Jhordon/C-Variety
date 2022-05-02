@@ -4,6 +4,7 @@
 */
 
 #include "stats.h"
+#include <iostream>
 
 using namespace std;
 

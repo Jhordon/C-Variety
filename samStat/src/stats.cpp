@@ -4,14 +4,25 @@
 */
 
 #include "stats.h"
+#include <iostream>
+#include <iterator>
+#include <math.h>
+#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <unistd.h>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 using namespace std;
 
 InputList::InputList(int i) {
-  select(i);
+  cwd = fs::current_path();
+  selection(i);
 }
 
-void InputList::select(int i) {
+void InputList::selection(int i) {
   switch (i) {
     case 1: {
       auto dataFile = [&]()
@@ -24,10 +35,10 @@ void InputList::select(int i) {
               File found...Scanning...
               ---------------------------
               File is empty.
-                  [Retry]   [Quit]
+                  [R] Retry  [Q] Quit
               ---------------------------
               1 or more values are not decimals...
-                  [Retry]   [Quit]
+                  [R] Retry  [Q] Quit
               ---------------------------
               Scan Complete.
               Would you like 'analysisResults'?
@@ -35,36 +46,60 @@ void InputList::select(int i) {
         */
         string input;
         cout << "~Text File Entry~\n";
+        cout << "Searching for 'data.txt' in " << cwd << "\n";
         sleep(1);
-        ifstream inTxt("data.txt");
-        if (inTxt.is_open())
-        {
-          getline(inTxt, input);
-          stringstream line(input);
-          while (line.good())
-          {
-            string value;
-            getline(line, value, ' ');
-            try
+
+        for (const auto & entry : fs::directory_iterator(cwd)) {
+          if (fs::exists("data.txt")) {
+            begin:
+            cout << "File found...Scanning...\n";
+            ifstream inTxt("data.txt");
+            if (inTxt.is_open())
             {
-              daValues.push_back(stod(value));
+              getline(inTxt, input);
+              stringstream line(input);
+              while (line.good())
+              {
+                string value;
+                getline(line, value, ' ');
+                try
+                {
+                  daValues.push_back(stod(value));
+                }
+                catch (exception e)
+                {
+                  sleep(1);
+                  cout << e.what() << "\nFile is either empty or has a non-decimal value present.\n   [R] Retry   [Q] Quit\n:";
+                  while (input != "R" || input != "Q") {
+                    getline(cin, input);
+                    if (input.compare("R") == 0)
+                    {
+                      goto begin;
+                    }
+                    else if (input.compare("Q") == 0)
+                    {
+                      return;
+                    }
+                    else
+                    {
+                      cout << ":";
+                    }
+                  }
+                }
+              }
+              inTxt.close();
+              cout << "Scan Complete.\n";
+              calcStats();
+              break;
             }
-            catch (exception e)
-            {
-              cout << e.what() << "\nCould not convert data value. Please format to decimal type and retry.\n";
-            }
+          } else {
+            cout << "No file found. Quitting...\n";
+            return;
           }
-          inTxt.close();
-          cout << "Scan Complete.\n";
-          calcStats();
-        }
-        else
-        {
-          cout << "Could not find 'data.txt'.\nMake sure the file is in the same location as the program.\nQuitting...\n";
         }
       };
       dataFile();
-      getdaValues();
+      printSample();
       break;
     }  
 
@@ -109,17 +144,17 @@ void InputList::select(int i) {
         }
       };
       manEntry();
-      getdaValues();
+      printSample();
       break;
     }
 
     default:
     cout << "That was unexpected...\n";
-    exit(1);
+    return;
   }
 }
 
-void InputList::getdaValues()
+void InputList::printSample()
 {
   string input;
   while (input != "y" || input != "n")
@@ -131,6 +166,8 @@ void InputList::getdaValues()
       /*  'analysisResults' created in 'CURRENT DIRECTORY'      4. a) Upon [y]...
           Press any key to exit.                                       Create 'analysisResults' w/ .csv & .txt of InputList within 'CURRENT DIRECTORY'
       */
+     analysisResults();
+     return;
     }
     else if (input.compare("n") == 0)
     {
@@ -148,9 +185,8 @@ void InputList::getdaValues()
       cout << "~Sample Statistics~\nMin " << min << "   Max " << max << "\nQ1 " << q1 << "    Mean " << mean
            << "\nMedian " << median << "    IQR " << iQR << "\nQ3 " << q3 << "    Sum " << sum
            << "\n\nPopulation Std Dev " << popStnD << "\nSample Std Dev " << samStnD
-           << "\n~~~~~~~~~~~~~~~~~~~\nPress any key to exit.\n";
-      getchar();
-      exit(0);
+           << "\n~~~~~~~~~~~~~~~~~~~\n";
+      return;
     }
     else
     {
@@ -337,6 +373,100 @@ void InputList::calcStats() {
   rtFlect = mean + popStnD;
 }
 
+void InputList::analysisResults() {
+  fs::create_directory("analysisResults");
+  auto makeCSV = [&]()
+  {
+    ofstream file("analysisResults/data.csv");
+    file << "Values,";
+    for (auto it : daValues) 
+      file << it << ",";
+    
+    file << "\nZ-Scores,";
+    for (auto it : zScores)
+      file << it << ",";
+
+    file << "\nMajor Outliers,";
+    for (auto it : majLiers)
+      file << it << ",";
+
+    file << "\nMinor Outliers,";
+    for (auto it : minLiers) 
+      file << it << ",";
+
+    file << "\nSum," << sum
+         << "\nMin," << min
+         << "\nMax," << max
+         << "\nMean," << mean
+         << "\nMedian," << median
+         << "\nMode," << mode
+         << "\nPopulation Standard Deviation," << popStnD
+         << "\nSample Standard Deviation," << samStnD
+         << "\nLeft Inflection," << leFlect
+         << "\nRight Inflection," << rtFlect
+         << "\nInter-Quartile Range," << iQR
+         << "\nQuartile 1," << q1
+         << "\nQuartile 3," << q3
+         << "\nLeft Inner Fence," << lfInnFence
+         << "\nRight Inner Fence," << rtInnFence
+         << "\nLeft Outer Fence," << lfOutFence
+         << "\nRight Outer Fence," << rtOutFence;
+
+    file << "\nConfidence Level, 80%, 90%, 95%, 98%, 99%";
+    vector<double> zVal = {1.28, 1.645, 1.96, 2.33, 2.58};
+    file << "\nConfidence Coefficient,";
+    for (auto it : zVal) 
+      file << it << ",";
+
+    file << "\nMargin of Error,";
+    for (auto it : mOE) 
+      file << it << ",";
+
+    file << "\nLower Bound CI,";
+    for (auto it : bttmLimit)
+      file << it << ",";
+
+    file << "\nUpper Bound CI,";
+    for (auto it : uppLimit)
+      file << it << ",";
+  };
+
+  auto makeTXT = [&]()
+  {
+    ofstream file("analysisResults/analysis.txt");
+    file << "The SUM represents the total of all values.\nThe MIN, MEDIAN, and MAX values assist in distinguishing spread of data as well as MODE representing most frequent data values.\n";
+    file << "The Inter-Quartile Range or IQR represents the middle spread of data with Q1 and Q3 assisting to further separate and distinguish boundaries.\n";
+    file << "Inflection values leFlect/rtFlect are verbatim, the points that assist in indicating concave/convex curving.\n";
+    file << "The Outliers represented by Major/Minor are determined by the Inner and Outer Fences found from IQR.\n";
+    file << "Standard Deviation assists in determining dispersion of the mean across the values. Population for an entirety of a set, and sample for a selection of the population.\n";
+    file << "Z-Scores alongside the Values are presented which assist in determining how far off from the mean the value is when standardized.\n";
+    file << "The Confidence Interval Calculation with respective Margin of Error and Upper/Lower Limits are provided for use in further analysis...\n";
+  };
+
+  makeCSV();
+  makeTXT();
+  if (fs::exists("analysisResults")) 
+    cout << "'analysisResults' created in " << cwd << "\n";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* showStats of userList
@@ -393,54 +523,3 @@ void InputList::calcStats() {
 //     results << "\nUpper Bound     ";
 //     for (auto i : userList.highLimsCI)
 //       results << i << ",  ";
-//     results.close();
-
-//     std::cout << "File 'analysisResults.txt' has been created.\n";
-//   } else {
-//     std::cout << std::endl;
-//     std::cout << "~SAMPLE STATISTICS~\n";
-//     std::cout << "Minimum: " << userList.min << std::endl;
-//     std::cout << "Maximum: " << userList.max << std::endl;
-//     std::cout << "Mean: " << userList.mean << std::endl;
-//     std::cout << "Median: " << userList.median << std::endl;
-//     std::cout << "Mode: " << userList.mode << std::endl;
-//     std::cout << "Sum: " << userList.sum << std::endl;
-//     std::cout << "Sample Standard Deviation: " << userList.samStanDev << std::endl;
-//     std::cout << "Population Standard Deviation: " << userList.popStanDev << std::endl;
-//     std::cout << "Inflection Values: ";
-//     for (auto i : userList.inflectVals)
-//       std::cout << i << ", ";
-//     std::cout << "\n~~~~~~~~~~~~~~~~\n";
-//     std::cout << "Quartile 1: " << userList.q1 << std::endl;
-//     std::cout << "Interquartile Range: " << userList.inQR << std::endl;
-//     std::cout << "Quartile 3: " << userList.q3;
-//     std::cout << "\n~~~~~~~~~~~~~~~~\n";
-//     std::cout << "~OUTLIER'S & FENCES~\n";
-//     std::cout << "Major Outlier's: ";
-//     for (auto i : userList.majLierVals)
-//       std::cout << i << ", ";
-//     std::cout << "\nOuter Fence Values: ";
-//     for (auto i : userList.outFenVals)
-//       std::cout << i << ", ";
-//     std::cout << "\nMinor Outlier's: ";
-//     for (auto i : userList.minLierVals)
-//       std::cout << i << ", ";
-//     std::cout << "\nInner Fence Values: ";
-//     for (auto i : userList.inFenVals)
-//       std::cout << i << ", ";
-//     std::cout << "\n~~~~~~~~~~~~~~~~\n";
-//     std::cout << "~CONFIDENCE INTERVAL~\n";
-//     std::cout << "Level of %: 80% 90% 95% 98% 99%\n";
-//     std::cout << "Z*Values: 1.28 1.645 1.96 2.33 2.58\n";
-//     std::cout << "Margin of Error: ";
-//     for (auto i : userList.margsOErr)
-//       std::cout << i << ", ";
-//     std::cout << "\nLower Limit: ";
-//     for (auto i : userList.lowLimsCI)
-//       std::cout << i << ", ";
-//     std::cout << "\nUpper Limit: ";
-//     for (auto i : userList.highLimsCI)
-//       std::cout << i << ", ";
-//     std::cout << "\n~~~~~~~~~~~~~~~~\n";
-//   }
-// }

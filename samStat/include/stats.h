@@ -6,16 +6,8 @@
 #ifndef SAMSTAT_H
 #define SAMSTAT_H
 
-#include <iostream>
-#include <vector>
-#include <iterator>
 #include <string>
-#include <math.h>
-#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <unistd.h>
-#include <filesystem>
+#include <vector>
 
 /* Statistical Values Attributed to List:
     - Sum, Minimum, Maximum, Mean, Median, Mode, 
@@ -27,12 +19,16 @@
 class InputList {
     public:
         InputList(int i);
-        void select(int i);
-        void getdaValues();
 
     private:
-    // 'CURRENT DIRECTORY'
+        void selection(int i);
+        void printSample();
         void calcStats();
+        void analysisResults();
+        
+        // CURRENT DIRECTORY
+        std::string cwd;
+
         double sum, min, max, median, mode, popStnD, samStnD, mean, leFlect, rtFlect, iQR, q1, q3,
          lfInnFence, rtInnFence, lfOutFence, rtOutFence;
     
