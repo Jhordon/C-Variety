@@ -7,16 +7,18 @@
 #define PFBCALC_H
 
 #include <string>
-
 class Income {
     public:
-        Income();
-        void setIncome(std::string x);
+        void setIncome(double x);
+        void setFlag(std::string f);
         void createFiles();
 
     private:
         void pfbCalc();
         double hrRate, wkPay, mthInc, salary;
+        std::string flag;
+
+        // variables for all expenses and deductions to be taken out
 };
 
-#endif // !PFBCALC.H
+#endif
