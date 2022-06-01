@@ -1,3 +1,6 @@
+/* C++: Series
+    Mathematical formulas resembling series or likeness of. @Jhordon
+*/
 #include <iostream>
 #include <string>
 #include <math.h>
@@ -5,13 +8,14 @@
 using namespace std;
 
 // assistant functions
-int factorial(int n) {
-  int prod = 1;
+int foarial(int val) {
+  // different rendition to be made, this is incorrect
+  // 16! should result in 20922789888000 instead getting 2004189184
+  int prod = 1, n = val;
   while (n != 0) {
     prod *= n;
-    n - 1;
+    n--;
   }
-  prod += 1;
   return prod;
 }
 
@@ -27,48 +31,57 @@ int main() {
   // [&]() -> {} utilized for input ref.
   string input;
 
+  // potentilly revise these three
+  auto permutate = [](auto& n, auto& r) -> auto {
+    auto a = n, b = r;
 
-  // select2 => 'Two Input' Functions
-  auto permutate = [](auto n, auto r, auto isRep) -> auto {
+    auto diff = a - b;
+    auto top = foarial(a);
+    auto bottom = foarial(diff);
+
     /* repeating: n^r */
-    if (isRep) {
-      cout << "\nP(" << n << ", " << r << ") w/ Rep. => " << pow(n, r);
-    }
+    cout << "\nP(" << a << ", " << b << ") w/ Rep. => " << pow(a, b);
+
     /* non-repeating: n!/(n-r)! */
-    if (!isRep) {
-      cout << "\nP(" << n << ", " << r << ") w/o Rep. => " << ((factorial(n)) / (factorial(n-r)));
-    }
+    cout << "\nP(" << a << ", " << b << ") w/o Rep. => " << (top / bottom) << endl;
   };
 
-  auto combo = [](auto n, auto r, auto isRep) -> auto {
+  auto combo = [](auto& n, auto& r) -> auto {
+    auto t = (r + n) - 1;
+    auto tm = (n - 1);
+    auto tb = (n - r);
+
+    auto top = foarial(t);
+    auto bottom = foarial(r) * foarial(tm);
+
     /* repeating: (r+n-1)!/r!(n-1)! */
-    if (isRep) {
-      cout << "\nC(" << n << ", " << r << ") w/ Rep. => " <<
-        ((factorial((r + n - 1))) / (factorial(r)) * (factorial(n-1)));
-    }
+    cout << "\nC(" << n << ", " << r << ") w/ Rep. => " << (top / bottom);
+
+    top = foarial(n);
+    bottom = foarial(r) * foarial(tb);
+
     /* non-repeating: n!/r!(n-r)! */
-    if (!isRep) {
-      cout << "C(" << n << ", " << r << ") w/o Rep. => " <<
-        ((factorial(n)) / (factorial(r)) * (factorial(n-r)));
-    }
+    cout << "\nC(" << n << ", " << r << ") w/o Rep. => " << (top / bottom) << endl;
   };
 
-  auto nCk = [](auto n, auto r) -> auto {
+  auto nCk = [](auto& n, auto& r) -> auto {
+    // potential correction to breaking the loop here
     int res;
     while (n != 0) {
       res = biCo(n, r);
 
       if (n == 0 && r == n) {
         cout << "\nnCk => " << res << endl;
+        break;
       }
 
       cout << "\nnCk => " << res << endl;
+      break;
     }
   };
 
 
-
-  // select1 => 'One Input' Functions
+  // double check some of the methodology of these, otherwise check comments
   auto collatz = [&]() -> auto {
     int n;
     cout << "~Collatz Sequence~\n  Provide a start # or 'B'\n";
@@ -94,7 +107,7 @@ begin:
           n = n / 2;
         }
       }
-      cout << "\n------------------\n";
+      cout << "1\n------------------\n";
     }
   };
 
@@ -115,22 +128,25 @@ begin:
         }
       }
 
-      res = factorial(n);
+      res = foarial(n);
       cout << n << "! => " << res;
       cout << "\n-----------\n";
     }
   };
 
+  // needs implementation
   auto isDivisible = [&]() -> auto {
     /*isDivisible(int n)
       checks for 2-12 from brilliant.org/wiki/divisibility-rules*/
   };
 
+  // needs implementation
   auto ordinal = [&]() -> auto {
     /*ordinal(int n)
       // follow workbench guide*/
   };
 
+  // causing infinite loop in main portion
   auto triangular = [&]() -> auto {
     int n, x, z, next, sum, temp;
     cout << "~Triangular Numbers~\n  Provide a # or 'B'\n";
@@ -164,11 +180,12 @@ begin:
           }
         }
       }
+
     }
   };
 
+  // needs implementation
   auto fibonacci = [&]() -> auto {
-    int
     /*fibonacci(int n) nth select
       aN = (Phi^n - phi^n) / sqrt(5)
       Phi = (1 + sqrt(5))/2
@@ -180,6 +197,7 @@ begin:
         Fn = Fn-1 + Fn-2 while n > 1*/
   };
 
+  // needs a second look...
   auto partSum = [&]() -> auto {
     int n, i, sum;
     cout << "~Partial Sum~\n   Provide a # or 'B'\n";
@@ -204,6 +222,7 @@ begin:
     }
   };
 
+  // needs a second look...
   auto squareSum = [&]() -> auto {
     int n, i, prod = 1, sum;
     cout << "~Sum of Squares~\n  Provide a # or 'B'\n";
@@ -230,6 +249,7 @@ begin:
     }
   };
 
+  // needs a second look...
   auto sum2k1 = [&]() -> auto {
     int i, n, res;
     cout << "~Sum Series: 2k+1 ~\n   Provide a # or 'B'\n";
@@ -280,38 +300,47 @@ subSel:
           switch(stoi(input)) {
             case 1: {
               collatz();
+              break;
             }
 
             case 2: {
               factorial();
+              break;
             }
 
             case 3: {
               triangular();
+              break;
             }
 
             case 4: {
               fibonacci();
+              break;
             }
 
             case 5: {
               ordinal();
+              break;
             }
 
             case 6: {
               isDivisible();
+              break;
             }
 
             case 7: {
               partSum();
+              break;
             }
 
             case 8: {
               squareSum();
+              break;
             }
 
             case 9: {
               sum2k1();
+              break;
             }
 
             default:
@@ -368,12 +397,13 @@ getR:
         }
       }
 
-      cout << "You typed: " << n << " & " << r << endl;
-      permutate(n, r, true);
-      permutate(n, r, false);
-      combo(n, r, true);
-      combo(n, r, false);
+      // check n & r, if not greater go back to getN and start over...
+sequence:
+      cout << "\nYou typed: " << n << " & " << r;
+      permutate(n, r);
+      combo(n, r);
       nCk(n, r);
+      cout << endl;
     }
   };
 
