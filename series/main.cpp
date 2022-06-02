@@ -1,20 +1,23 @@
 /* C++: Series
-    Mathematical formulas resembling series or likeness of. @Jhordon
+    Mathematical formulas resembling series or likeness of - @Jhordon
 */
+
+/* NOTE: some errors occur when certain inputs are either
+    less than 'n'
+    over a certain input length
+    cause crash/faults...
+*/
+
 #include <iostream>
 #include <string>
 #include <math.h>
 
 using namespace std;
 
-// assistant functions
-int foarial(int val) {
-  // different rendition to be made, this is incorrect
-  // 16! should result in 20922789888000 instead getting 2004189184
-  int prod = 1, n = val;
-  while (n != 0) {
-    prod *= n;
-    n--;
+double foarial(double val) {
+  double prod = 1;
+  for (unsigned int i = val; i > 0; i--) {
+    prod *= i;
   }
   return prod;
 }
@@ -28,10 +31,9 @@ int biCo(int n, int k) {
 
 
 int main() {
-  // [&]() -> {} utilized for input ref.
+  /* '[&]() -> {}' utilized for input ref. across lambda fn()'s */
   string input;
 
-  // potentilly revise these three
   auto permutate = [](auto& n, auto& r) -> auto {
     auto a = n, b = r;
 
@@ -65,7 +67,6 @@ int main() {
   };
 
   auto nCk = [](auto& n, auto& r) -> auto {
-    // potential correction to breaking the loop here
     int res;
     while (n != 0) {
       res = biCo(n, r);
@@ -81,7 +82,6 @@ int main() {
   };
 
 
-  // double check some of the methodology of these, otherwise check comments
   auto collatz = [&]() -> auto {
     int n;
     cout << "~Collatz Sequence~\n  Provide a start # or 'B'\n";
@@ -112,8 +112,9 @@ begin:
   };
 
   auto factorial = [&]() -> void {
-    int n, res;
+    double n, res;
     cout << "~Factorial~\n  Provide a # or 'B'\n";
+    // potentially surround this in a function? 
     while (input != "B" || input.compare("B") != 0) {
 begin:
       cout << ": ";
@@ -146,12 +147,18 @@ begin:
       // follow workbench guide*/
   };
 
-  // causing infinite loop in main portion
   auto triangular = [&]() -> auto {
+    // may need optimization/reduction
     int n, x, z, next, sum, temp;
     cout << "~Triangular Numbers~\n  Provide a # or 'B'\n";
     while (input != "B" || input.compare("B") != 0) {
 begin:
+      sum = 0;
+      temp = 0;
+      x = 0;
+      z = 0;
+      n = 0;
+      next = 0;
       cout << ": ";
       getline(cin, input);
       try {
@@ -164,49 +171,70 @@ begin:
         }
       }
 
-      while (n != 0) {
-        temp = ((8 * n) + 1);
-        x = (sqrt(temp) - 1) / 2;
-        z = (int) x;
-        next = (2 * (2 + 1)) / 2;
-
-        for (int i = 1; i <= n; i++) {
-          sum += i;
-          if (sum == n) {
-            cout << n << " is triangular\n";
-          }
-          if (i == n) {
-            cout << n << " is not triangular, nearest is " << next << endl;
-          }
+      temp = ((8 * n) + 1);
+      x = (sqrt(temp) - 1) / 2;
+      z = (int) x;
+      next = (z * (z + 1)) / 2;
+      
+      for (unsigned int i = 1; i <= n; i++) {
+        sum += i;
+        if (sum == n) {
+          cout << n << " is triangular\n";
+          break;
+        }
+        if (i == n) {
+          cout << n << " is not triangular, nearest is " << next << endl;
+          break;
         }
       }
-
     }
   };
 
-  // needs implementation
   auto fibonacci = [&]() -> auto {
-    /*fibonacci(int n) nth select
-      aN = (Phi^n - phi^n) / sqrt(5)
-      Phi = (1 + sqrt(5))/2
-      phi = (1 - sqrt(5))/2   // -1/Phi
-
-      also
-        F0 = 0
-        F1 = 1
-        Fn = Fn-1 + Fn-2 while n > 1*/
-  };
-
-  // needs a second look...
-  auto partSum = [&]() -> auto {
-    int n, i, sum;
-    cout << "~Partial Sum~\n   Provide a # or 'B'\n";
+    // perhaps a modification here...
+    double n, aN, phiL, phis;
+    cout << "~Fibonacci Sequence~\n  Provide a # or 'B'\n";
     while (input != "B" || input.compare("B") != 0) {
 begin:
       cout << ": ";
       getline(cin, input);
       try {
         n = stoi(input);
+      }
+      catch (...) {
+        if (input == "B" || input.compare("B") == 0) {
+          break;
+        } else {
+          goto begin;
+        }
+      }
+
+      phiL = (1 + sqrt(5)) / 2;
+      phis = (1 - sqrt(5)) / 2;
+
+      aN = ((pow(phiL, n) - pow(phis, n)) / sqrt(5));
+      cout << aN << endl;
+    }
+      /*fibonacci(int n) nth select
+        aN = (Phi^n - phi^n) / sqrt(5)
+        Phi = (1 + sqrt(5))/2
+        phi = (1 - sqrt(5))/2   // -1/Phi
+
+        also
+          F0 = 0
+          F1 = 1
+          Fn = Fn-1 + Fn-2 while n > 1*/
+    };
+
+  auto partSum = [&]() -> auto {
+    cout << "~Partial Sum~\n   Provide a # or 'B'\n";
+    while (input != "B" || input.compare("B") != 0) {
+begin:
+      double n = 0, sum = 0;
+      cout << ": ";
+      getline(cin, input);
+      try {
+        n = stoi(input);
       } catch (...) {
         if (input == "B" || input.compare("B") == 0) {
           break;
@@ -215,19 +243,20 @@ begin:
         }
       }
 
-      for (i = 0; i < n; i++) {
+      for (unsigned int i = 1; i <= n; i++) {
         sum += i;
       }
       cout << sum << endl;
     }
   };
 
-  // needs a second look...
   auto squareSum = [&]() -> auto {
-    int n, i, prod = 1, sum;
+    int n, prod, sum;
     cout << "~Sum of Squares~\n  Provide a # or 'B'\n";
     while (input != "B" || input.compare("B") != 0) {
 begin:
+      prod = 1;
+      sum = 0;
       cout << ": ";
       getline(cin, input);
       try {
@@ -240,7 +269,7 @@ begin:
         }
       }
 
-      for (i = 1; i < n; i++) {
+      for (unsigned int i = 1; i <= n; i++) {
         prod = i * i;
         sum += prod;
       }
@@ -249,12 +278,12 @@ begin:
     }
   };
 
-  // needs a second look...
   auto sum2k1 = [&]() -> auto {
-    int i, n, res;
+    int n, res;
     cout << "~Sum Series: 2k+1 ~\n   Provide a # or 'B'\n";
     while (input != "B" || input.compare("B") != 0) {
 begin:
+      res = 0;
       cout << ": ";
       getline(cin, input);
       try {
@@ -267,8 +296,8 @@ begin:
         }
       }
 
-      for (i = 1; i < n; i++) {
-        res = (2 * i) + 1;
+      for (unsigned int i = 1; i <= n; i++) {
+        res += (2 * i) + 1;
       }
 
       cout << "From 1 to " << n << " => " << res << endl;
@@ -295,64 +324,64 @@ subSel:
               "   [3] Triangular  [8] Square Sum\n" <<
               "   [4] Fibonacci   [9] 2k+1 Sum\n" <<
               "   [5] Ordinal     [B] Back\n:";
-        getline(cin, input);
-        try {
-          switch(stoi(input)) {
-            case 1: {
-              collatz();
-              break;
-            }
-
-            case 2: {
-              factorial();
-              break;
-            }
-
-            case 3: {
-              triangular();
-              break;
-            }
-
-            case 4: {
-              fibonacci();
-              break;
-            }
-
-            case 5: {
-              ordinal();
-              break;
-            }
-
-            case 6: {
-              isDivisible();
-              break;
-            }
-
-            case 7: {
-              partSum();
-              break;
-            }
-
-            case 8: {
-              squareSum();
-              break;
-            }
-
-            case 9: {
-              sum2k1();
-              break;
-            }
-
-            default:
-              break;
-          }
-        } catch (...) {
-          if (input == "B" || input.compare("B") == 0) {
+      getline(cin, input);
+      try {
+        switch(stoi(input)) {
+          case 1: {
+            collatz();
             break;
-          } else {
+          }
+
+          case 2: {
+            factorial();
+            break;
+          }
+
+          case 3: {
+            triangular();
+            break;
+          }
+
+          case 4: {
+            fibonacci();
+            break;
+          }
+
+          case 5: {
+            ordinal();
+            break;
+          }
+
+          case 6: {
+            isDivisible();
+            break;
+          }
+
+          case 7: {
+            partSum();
+            break;
+          }
+
+          case 8: {
+            squareSum();
+            break;
+          }
+
+          case 9: {
+            sum2k1();
+            break;
+          }
+
+          default:
             goto subSel;
           }
+      } catch (...) {
+        if (input == "B" || input.compare("B") == 0) {
+          break;
+        } else {
+          goto subSel;
         }
+      }
     }
   };
 
@@ -397,13 +426,16 @@ getR:
         }
       }
 
-      // check n & r, if not greater go back to getN and start over...
-sequence:
-      cout << "\nYou typed: " << n << " & " << r;
-      permutate(n, r);
-      combo(n, r);
-      nCk(n, r);
-      cout << endl;
+      if (n < r) {
+        cout << "Provided r of " << r << " is too large.\n";
+        goto getN;
+      } else {
+        cout << "\nYou typed: " << n << " & " << r;
+        permutate(n, r);
+        combo(n, r);
+        nCk(n, r);
+        cout << endl;
+      }
     }
   };
 
@@ -417,7 +449,7 @@ sequence:
 start:
     cout << "~Series Selection~\n   [1] w/ One Number\n   [2] w/ Two Numbers\n   [Q] Quit\n:";
     getline(cin, input);
-    // error check the input for expected behavior
+    /* error check the input for expected behavior */
     try {
       switch (stoi(input)) {
         case 1: {
@@ -429,7 +461,7 @@ start:
           break;
         }
         default: {
-          break;
+          goto start;
         }
       }
     } catch (...) {
