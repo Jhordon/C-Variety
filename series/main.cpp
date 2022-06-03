@@ -1,16 +1,21 @@
 /* C++: Series
-    Mathematical formulas resembling series or likeness of - @Jhordon
+    Mathematical formulas in relation/likeness to series - @Jhordon
 */
 
-/* NOTE: some errors occur when certain inputs are either
-    less than 'n'
-    over a certain input length
-    cause crash/faults...
+/* 
+  TODO:
+    - have a check for input length greater than 1mil || 1,000,000
+    - full implementation for isDivisible() w/ basecases brilliant.org/wiki/divisibility-rules
+    - abstractify grabbing the input for fn()
+    - code review once more...
+
+    challenge: clear terminal after completing a fn() 
 */
 
 #include <iostream>
 #include <string>
 #include <math.h>
+#include <cstring>
 
 using namespace std;
 
@@ -29,9 +34,8 @@ int biCo(int n, int k) {
   return (n * biCo(n-1, k-1)) / k;
 }
 
-
 int main() {
-  /* '[&]() -> {}' utilized for input ref. across lambda fn()'s */
+  /* '[&]() -> {}'    & => input */
   string input;
 
   auto permutate = [](auto& n, auto& r) -> auto {
@@ -82,22 +86,25 @@ int main() {
   };
 
 
+
   auto collatz = [&]() -> auto {
     int n;
-    cout << "~Collatz Sequence~\n  Provide a start # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0) {
+    cout << "\n~Collatz Sequence~\n";
+    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
-      cout << ": ";
+      cout << "Provide a start # or 'B'\n: ";
       getline(cin, input);
       try {
         n = stoi(input);
       } catch (...) {
-        if (input == "B" || input.compare("B") == 0) {
-          break;
+        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
+          return;
         } else {
           goto begin;
         }
       }
+
+      cout << "\nStarting from " << n << ", the sequence is:\n";
 
       while (n != 1) {
         cout << n << " ";
@@ -107,51 +114,131 @@ begin:
           n = n / 2;
         }
       }
+
       cout << "1\n------------------\n";
     }
   };
 
-  auto factorial = [&]() -> void {
+  auto factorial = [&]() -> auto {
     double n, res;
-    cout << "~Factorial~\n  Provide a # or 'B'\n";
-    // potentially surround this in a function? 
-    while (input != "B" || input.compare("B") != 0) {
+    cout << "\n~Factorial~\n  Provide a # or 'B'\n";
+    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
       cout << ": ";
       getline(cin, input);
       try {
         n = stoi(input);
       } catch (...) {
-        if (input == "B" || input.compare("B") == 0) {
-          break;
+        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
+          return;
         } else {
           goto begin;
         }
       }
 
       res = foarial(n);
-      cout << n << "! => " << res;
-      cout << "\n-----------\n";
+      cout << endl << n << "! => " << res << "\n-----------\n";
     }
   };
 
-  // needs implementation
   auto isDivisible = [&]() -> auto {
-    /*isDivisible(int n)
-      checks for 2-12 from brilliant.org/wiki/divisibility-rules*/
+    int n;
+    cout << "\n~Divisor Check~\n  Provide a # or 'B'\n";
+    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
+begin:
+      cout << ": ";
+      getline(cin, input);
+      try {
+        n = stoi(input);
+      } catch (...) {
+        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
+          return;
+        } else {
+          goto begin;
+        }
+      }
+
+      // more modifications here
+      char inputString[to_string(n).length() + 1];
+      strcpy(inputString, to_string(n).c_str());
+
+      if ((n % 2) == 0) {
+        if (((n % 2) == 0) && ((n % 3) == 0) && (inputString[strlen(inputString) - 1] == '0')) {
+          cout << endl << n << " is divisible by 2, 3, 5, 6, and 10\n";
+        } else if (((n % 2) == 0) && ((n % 3) == 0)) {
+          cout << endl << n << " is divisble by 2, 3, and 6\n";
+        } else if (inputString[strlen(inputString) - 1] == '0') {
+          cout << endl << n << " is divisible by 2, 5, and 10\n";
+        } else {
+          if (((n % 2) == 0) && ((n % 4) == 0) && ((n % 8) == 0)) {
+            cout << endl << n << " is divisible by 2, 4, and 8\n";
+          } else {
+            cout << endl << n << " is divisible by 2\n";
+          } 
+        }
+      } else {
+        if ((n % 3) == 0) {
+          if (((n % 3) == 0) && ((n % 4) == 0)) {
+            cout << endl << n << " is divisible by 3, 4, and 12\n";
+          } else {
+            cout << endl << n << " is divisible by 3\n";
+          }
+        }
+        if (inputString[strlen(inputString) - 1] == '5') {
+          cout << endl << n << " is divisible by 5\n";
+        }
+      }
+    }
   };
 
-  // needs implementation
   auto ordinal = [&]() -> auto {
-    /*ordinal(int n)
-      // follow workbench guide*/
+    int n;
+    cout << "\n~Ordinal~\n  Provide a # or 'B'\n";
+    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
+begin:
+      cout << ": ";
+      getline(cin, input);
+      try {
+        n = stoi(input);
+      } catch (...) {
+        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
+          return;
+        } else {
+          goto begin;
+        }
+      }
+
+      char inputString[to_string(n).length() + 1];
+      strcpy(inputString, to_string(n).c_str());
+
+      if (inputString[strlen(inputString) - 1] == '1') {
+        if (inputString[strlen(inputString) - 2] == '1') {
+          cout << to_string(n) << "th\n";
+        } else {
+          cout << to_string(n) << "st\n";
+        }
+      } else if (inputString[strlen(inputString) - 1] == '2') {
+        if (inputString[strlen(inputString) - 2] == '1') {
+          cout << to_string(n) << "th\n";
+        } else {
+          cout << to_string(n) << "nd\n";
+        }
+      } else if (inputString[strlen(inputString) - 1] == '3') {
+        if (inputString[strlen(inputString) - 2] == '1') {
+          cout << to_string(n) << "th\n";
+        } else {
+          cout << to_string(n) << "rd\n";
+        }
+      } else {
+        cout << to_string(n) << "th\n";
+      }
+    }
   };
 
   auto triangular = [&]() -> auto {
-    // may need optimization/reduction
     int n, x, z, next, sum, temp;
-    cout << "~Triangular Numbers~\n  Provide a # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0) {
+    cout << "\n~Triangular Numbers~\n  Provide a # or 'B'\n";
+    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
       sum = 0;
       temp = 0;
@@ -164,8 +251,8 @@ begin:
       try {
         n = stoi(input);
       } catch (...) {
-        if (input == "B" || input.compare("B") == 0) {
-          break;
+        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
+          return;
         } else {
           goto begin;
         }
@@ -176,14 +263,14 @@ begin:
       z = (int) x;
       next = (z * (z + 1)) / 2;
       
-      for (unsigned int i = 1; i <= n; i++) {
+      for (unsigned int i = 0; i <= n; i++) {
         sum += i;
         if (sum == n) {
-          cout << n << " is triangular\n";
+          cout << endl << n << " is triangular\n";
           break;
         }
         if (i == n) {
-          cout << n << " is not triangular, nearest is " << next << endl;
+          cout << endl << n << " is not triangular, nearest is " << next << endl;
           break;
         }
       }
@@ -191,10 +278,9 @@ begin:
   };
 
   auto fibonacci = [&]() -> auto {
-    // perhaps a modification here...
     double n, aN, phiL, phis;
-    cout << "~Fibonacci Sequence~\n  Provide a # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0) {
+    cout << "\n~Fibonacci Sequence~\n  Provide a # or 'B'\n";
+    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
       cout << ": ";
       getline(cin, input);
@@ -202,8 +288,8 @@ begin:
         n = stoi(input);
       }
       catch (...) {
-        if (input == "B" || input.compare("B") == 0) {
-          break;
+        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
+          return;
         } else {
           goto begin;
         }
@@ -213,7 +299,7 @@ begin:
       phis = (1 - sqrt(5)) / 2;
 
       aN = ((pow(phiL, n) - pow(phis, n)) / sqrt(5));
-      cout << aN << endl;
+      cout << "\nThe " << n << " num of Fn => " << aN << endl;
     }
       /*fibonacci(int n) nth select
         aN = (Phi^n - phi^n) / sqrt(5)
@@ -227,8 +313,8 @@ begin:
     };
 
   auto partSum = [&]() -> auto {
-    cout << "~Partial Sum~\n   Provide a # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0) {
+    cout << "\n~Partial Sum~\n   Provide a # or 'B'\n";
+    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
       double n = 0, sum = 0;
       cout << ": ";
@@ -236,8 +322,8 @@ begin:
       try {
         n = stoi(input);
       } catch (...) {
-        if (input == "B" || input.compare("B") == 0) {
-          break;
+        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
+          return;
         } else {
           goto begin;
         }
@@ -246,14 +332,14 @@ begin:
       for (unsigned int i = 1; i <= n; i++) {
         sum += i;
       }
-      cout << sum << endl;
+      cout << "\nSum from 1 to " << n << " => " << sum << endl;
     }
   };
 
   auto squareSum = [&]() -> auto {
     int n, prod, sum;
-    cout << "~Sum of Squares~\n  Provide a # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0) {
+    cout << "\n~Sum of Squares~\n  Provide a # or 'B'\n";
+    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
       prod = 1;
       sum = 0;
@@ -262,8 +348,8 @@ begin:
       try {
         n = stoi(input);
       } catch (...) {
-        if (input == "B" || input.compare("B") == 0) {
-          break;
+        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
+          return;
         } else {
           goto begin;
         }
@@ -274,14 +360,14 @@ begin:
         sum += prod;
       }
 
-      cout << "The Sum of Squares from 1 to " << n << " => " << sum << endl;
+      cout << "\nSum of Squares from 1 to " << n << " => " << sum << endl;
     }
   };
 
   auto sum2k1 = [&]() -> auto {
     int n, res;
-    cout << "~Sum Series: 2k+1 ~\n   Provide a # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0) {
+    cout << "\n~Sum Series: 2k+1 ~\n   Provide a # or 'B'\n";
+    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
       res = 0;
       cout << ": ";
@@ -289,8 +375,8 @@ begin:
       try {
         n = stoi(input);
       } catch (...) {
-        if (input == "B" || input.compare("B") == 0) {
-          break;
+        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
+          return;
         } else {
           goto begin;
         }
@@ -300,25 +386,26 @@ begin:
         res += (2 * i) + 1;
       }
 
-      cout << "From 1 to " << n << " => " << res << endl;
+      cout << "\nSum of 2k+1 from 1 to " << n << " => " << res << endl;
     }
   };
 
 
-  /*  3rd Entry Point:
-      ~Series Selection: Select a Method~
+
+  /*  'Sub-Menu 1'
+      ~Select a Method~
           [1] Collatz     [5] Divisor Check
           [2] Factorial   [6] Partial Sum
           [3] Triangular  [7] Square Sum
           [4] Fibonacci   [8] 2k+1 Sum
           [Q] Quit        [9] Ordinal
 
-      perform related calculations upon successful selection
+      **perform related calculations upon a successful selection
   */
   auto select1 = [&]() -> auto {
-    while (input != "B" || input.compare("B") != 0) {
+    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 subSel:
-      cout << "~Series Selection: Select a Method~\n" <<
+      cout << "\n~Select a Method~\n" <<
               "   [1] Collatz     [6] Divisor Check\n" <<
               "   [2] Factorial   [7] Partial Sum\n" <<
               "   [3] Triangular  [8] Square Sum\n" <<
@@ -329,55 +416,55 @@ subSel:
         switch(stoi(input)) {
           case 1: {
             collatz();
-            break;
+            goto subSel;
           }
 
           case 2: {
             factorial();
-            break;
+            goto subSel;
           }
 
           case 3: {
             triangular();
-            break;
+            goto subSel;
           }
 
           case 4: {
             fibonacci();
-            break;
+            goto subSel;
           }
 
           case 5: {
             ordinal();
-            break;
+            goto subSel;
           }
 
           case 6: {
             isDivisible();
-            break;
+            goto subSel;
           }
 
           case 7: {
             partSum();
-            break;
+            goto subSel;
           }
 
           case 8: {
             squareSum();
-            break;
+            goto subSel;
           }
 
           case 9: {
             sum2k1();
-            break;
+            goto subSel;
           }
 
           default:
             goto subSel;
           }
       } catch (...) {
-        if (input == "B" || input.compare("B") == 0) {
-          break;
+        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
+          return;
         } else {
           goto subSel;
         }
@@ -385,8 +472,8 @@ subSel:
     }
   };
 
-  /*  2nd Entry Point:
-        ~Series Selection: Permutation/Combination~
+  /*  'Sub-Menu 2'
+        ~Permutation, Combination, Binomial Coefficient~
             You typed: 'n' & 'r'
 
             P(n,r) w/ Rep. => 'res'
@@ -399,28 +486,28 @@ subSel:
   */
   auto select2 = [&]() -> auto {
     int n, r;
-    while (input != "B" || input.compare("B") != 0) {
-      cout << "~Series Selection: Permutation/Combination~\n Provide 'N' & 'R' values or 'B' for back.\n";
+    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
+      cout << "\n~Permutation, Combination, Binomial Coefficient~\n Provide 'n' & 'r' values or 'B' for back.\n";
 getN:
-      cout << "'N' value\n:";
+      cout << "'n' value\n:";
       getline(cin, input);
       try {
         n = stoi(input);
       } catch (...) {
-        if (input == "B" || input.compare("B") == 0) {
-          break;
+        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
+          return;
         } else {
           goto getN;
         }
       }
 getR:
-      cout << "'R' value\n:";
+      cout << "'r' value\n:";
       getline(cin, input);
       try {
         r = stoi(input);
       } catch (...) {
-        if (input == "B" || input.compare("B") == 0) {
-          break;
+        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
+          return;
         } else {
           goto getR;
         }
@@ -434,38 +521,37 @@ getR:
         permutate(n, r);
         combo(n, r);
         nCk(n, r);
-        cout << endl;
       }
     }
   };
 
-  /*   1st Entry Point:
+  /* 'Main Menu'
         ~Series Selection~
             [1] 'One Number Input'
             [2] 'Two Number Input'
             [Q] Quit
   */
-  while (input != "Q" || input.compare("Q") != 0) {
+  while (input != "Q" || input.compare("Q") != 0 || input != "q" || input.compare("q") != 0) {
 start:
-    cout << "~Series Selection~\n   [1] w/ One Number\n   [2] w/ Two Numbers\n   [Q] Quit\n:";
+    cout << "\n~Series Selection~\n   [1] w/ One Number\n   [2] w/ Two Numbers\n   [Q] Quit\n:";
     getline(cin, input);
-    /* error check the input for expected behavior */
+    /* error check the input for expected behavior here */
     try {
       switch (stoi(input)) {
         case 1: {
           select1();
-          break;
+          goto start;
         }
         case 2: {
           select2();
-          break;
+          goto start;
         }
         default: {
           goto start;
         }
       }
     } catch (...) {
-      if (input == "Q" || input.compare("Q") == 0) {
+      if (input == "Q" || input.compare("Q") == 0 || input == "q" || input.compare("q") == 0) {
         exit(0);
       } else {
         goto start;
