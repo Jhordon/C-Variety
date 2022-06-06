@@ -4,10 +4,7 @@
 
 /* 
   TODO:
-    - have a check for input length greater than 1mil || 1,000,000
     - full implementation for isDivisible() w/ basecases brilliant.org/wiki/divisibility-rules
-    - abstractify grabbing the input for fn()
-    - code review once more...
 
     challenge: clear terminal after completing a fn() 
 */
@@ -19,7 +16,8 @@
 
 using namespace std;
 
-double foarial(double val) {
+template <typename T>
+double foarial(T val) {
   double prod = 1;
   for (unsigned int i = val; i > 0; i--) {
     prod *= i;
@@ -39,35 +37,35 @@ int main() {
   string input;
 
   auto permutate = [](auto& n, auto& r) -> auto {
-    auto a = n, b = r;
+    // auto a = n, b = r;
 
-    auto diff = a - b;
-    auto top = foarial(a);
-    auto bottom = foarial(diff);
+    // auto diff = a - b;
+    // auto top = foarial(a);
+    // auto bottom = foarial(diff);
 
     /* repeating: n^r */
-    cout << "\nP(" << a << ", " << b << ") w/ Rep. => " << pow(a, b);
+    cout << "\nP(" << n << ", " << r << ") w/ Rep. => " << pow(n, r);
 
     /* non-repeating: n!/(n-r)! */
-    cout << "\nP(" << a << ", " << b << ") w/o Rep. => " << (top / bottom) << endl;
+    cout << "\nP(" << n << ", " << r << ") w/o Rep. => " << ((foarial(n)) / foarial((n - r))) << endl;
   };
 
   auto combo = [](auto& n, auto& r) -> auto {
-    auto t = (r + n) - 1;
-    auto tm = (n - 1);
-    auto tb = (n - r);
+    // auto t = (r + n) - 1;
+    // auto tm = (n - 1);
+    // auto tb = (n - r);
 
-    auto top = foarial(t);
-    auto bottom = foarial(r) * foarial(tm);
+    // auto top = foarial(t);
+    // auto bottom = foarial(r) * foarial(tm);
 
     /* repeating: (r+n-1)!/r!(n-1)! */
-    cout << "\nC(" << n << ", " << r << ") w/ Rep. => " << (top / bottom);
+    cout << "\nC(" << n << ", " << r << ") w/ Rep. => " << ((foarial(((r + n) - 1))) / ((foarial(r)) * (foarial((n - 1)))));
 
-    top = foarial(n);
-    bottom = foarial(r) * foarial(tb);
+    // top = foarial(n);
+    // bottom = foarial(r) * foarial(tb);
 
     /* non-repeating: n!/r!(n-r)! */
-    cout << "\nC(" << n << ", " << r << ") w/o Rep. => " << (top / bottom) << endl;
+    cout << "\nC(" << n << ", " << r << ") w/o Rep. => " << ((foarial(n)) / ((foarial(r)) * (foarial((n - r))))) << endl;
   };
 
   auto nCk = [](auto& n, auto& r) -> auto {
@@ -85,222 +83,292 @@ int main() {
     }
   };
 
-
-
-  auto collatz = [&]() -> auto {
-    int n;
-    cout << "\n~Collatz Sequence~\n";
+  auto getNum = [&](auto& num) -> auto {
     while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
-      cout << "Provide a start # or 'B'\n: ";
+      cout << "Provide # or 'B'\n:";
       getline(cin, input);
       try {
-        n = stoi(input);
+        return stoi(input);
       } catch (...) {
         if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
-          return;
+          return -1;
         } else {
           goto begin;
         }
       }
+    }
+    return 0;
+  };
 
-      cout << "\nStarting from " << n << ", the sequence is:\n";
-
-      while (n != 1) {
-        cout << n << " ";
-        if ((n & 1) == 1) {
-          n = (3 * n) + 1;
-        } else {
-          n = n / 2;
-        }
+  auto collatz = [&]() -> auto {
+begin:
+    cout << "\n~Collatz Sequence~\n";
+    int n = getNum(n);
+    if (n > 0 && n < 1000000000) {
+      goto sequence;
+    } else {
+      if (n == -1) {
+        return;
+      } else if (n == 0) {
+        goto begin;
+      } else {
+        goto begin;
       }
+    }
 
-      cout << "1\n------------------\n";
+sequence:
+    cout << "\nStarting from " << n << ", the sequence is:\n";
+    while (n != 1) {
+      cout << n << " ";
+      if ((n & 1) == 1) {
+        n = (3 * n) + 1;
+      } else {
+        n = n / 2;
+      }
+    }
+    cout << "1\n------------------\n";
+
+prompt:
+    cout << "Again?\n   [y] [n]\n: ";
+    getline(cin, input);
+    if (input.compare("y") == 0) {
+      goto begin;
+    } else if (input.compare("n") == 0) {
+      return;
+    } else {
+      goto prompt;
     }
   };
 
   auto factorial = [&]() -> auto {
-    double n, res;
-    cout << "\n~Factorial~\n  Provide a # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
-      cout << ": ";
-      getline(cin, input);
-      try {
-        n = stoi(input);
-      } catch (...) {
-        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
-          return;
-        } else {
-          goto begin;
-        }
+    cout << "\n~Factorial~\n";
+    double n = getNum(n), res = 0;
+    if (n > -1 && n < 1000000000) { 
+      goto sequence;
+    } else {
+      if (n == -1) {
+        return;
+      } else {
+        goto begin;
       }
+    }
 
-      res = foarial(n);
-      cout << endl << n << "! => " << res << "\n-----------\n";
+sequence:
+    res = foarial(n);
+    cout << endl << n << "! => " << res << "\n-----------\n";
+
+prompt:
+    cout << "Again?\n   [y] [n]\n: ";
+    getline(cin, input);
+    if (input.compare("y") == 0) {
+      goto begin;
+    } else if (input.compare("n") == 0) {
+      return;
+    } else {
+      goto prompt;
     }
   };
 
   auto isDivisible = [&]() -> auto {
-    int n;
-    cout << "\n~Divisor Check~\n  Provide a # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
-      cout << ": ";
-      getline(cin, input);
-      try {
-        n = stoi(input);
-      } catch (...) {
-        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
-          return;
-        } else {
-          goto begin;
-        }
-      }
-
-      // more modifications here
-      char inputString[to_string(n).length() + 1];
-      strcpy(inputString, to_string(n).c_str());
-
-      if ((n % 2) == 0) {
-        if (((n % 2) == 0) && ((n % 3) == 0) && (inputString[strlen(inputString) - 1] == '0')) {
-          cout << endl << n << " is divisible by 2, 3, 5, 6, and 10\n";
-        } else if (((n % 2) == 0) && ((n % 3) == 0)) {
-          cout << endl << n << " is divisble by 2, 3, and 6\n";
-        } else if (inputString[strlen(inputString) - 1] == '0') {
-          cout << endl << n << " is divisible by 2, 5, and 10\n";
-        } else {
-          if (((n % 2) == 0) && ((n % 4) == 0) && ((n % 8) == 0)) {
-            cout << endl << n << " is divisible by 2, 4, and 8\n";
-          } else {
-            cout << endl << n << " is divisible by 2\n";
-          } 
-        }
+    cout << "\n~Divisor Check~\n";
+    int n = getNum(n);
+    if (n > -1 && n < 1000000000) {
+      goto sequence;
+    } else {
+      if (n == -1) {
+        return;
       } else {
-        if ((n % 3) == 0) {
-          if (((n % 3) == 0) && ((n % 4) == 0)) {
-            cout << endl << n << " is divisible by 3, 4, and 12\n";
-          } else {
-            cout << endl << n << " is divisible by 3\n";
-          }
+        goto begin;
+      }
+    }
+
+sequence:
+    // more modifications here
+    char inputString[to_string(n).length() + 1];
+    strcpy(inputString, to_string(n).c_str());
+
+    if ((n % 2) == 0)
+    {
+      if (((n % 2) == 0) && ((n % 3) == 0) && (inputString[strlen(inputString) - 1] == '0'))
+      {
+        cout << endl
+             << n << " is divisible by 2, 3, 5, 6, and 10\n";
+      }
+      else if (((n % 2) == 0) && ((n % 3) == 0))
+      {
+        cout << endl
+             << n << " is divisble by 2, 3, and 6\n";
+      }
+      else if (inputString[strlen(inputString) - 1] == '0')
+      {
+        cout << endl
+             << n << " is divisible by 2, 5, and 10\n";
+      }
+      else
+      {
+        if (((n % 2) == 0) && ((n % 4) == 0) && ((n % 8) == 0))
+        {
+          cout << endl
+               << n << " is divisible by 2, 4, and 8\n";
         }
-        if (inputString[strlen(inputString) - 1] == '5') {
-          cout << endl << n << " is divisible by 5\n";
+        else
+        {
+          cout << endl
+               << n << " is divisible by 2\n";
         }
       }
+    }
+    else
+    {
+      if ((n % 3) == 0)
+      {
+        if (((n % 3) == 0) && ((n % 4) == 0))
+        {
+          cout << endl
+               << n << " is divisible by 3, 4, and 12\n";
+        }
+        else
+        {
+          cout << endl
+               << n << " is divisible by 3\n";
+        }
+      }
+      if (inputString[strlen(inputString) - 1] == '5')
+      {
+        cout << endl
+             << n << " is divisible by 5\n";
+      }
+    }
+
+prompt:
+    cout << "Again?\n   [y] [n]\n: ";
+    getline(cin, input);
+    if (input.compare("y") == 0) {
+      goto begin;
+    } else if (input.compare("n") == 0) {
+      return;
+    } else {
+      goto prompt;
     }
   };
 
   auto ordinal = [&]() -> auto {
-    int n;
-    cout << "\n~Ordinal~\n  Provide a # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
-      cout << ": ";
-      getline(cin, input);
-      try {
-        n = stoi(input);
-      } catch (...) {
-        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
-          return;
-        } else {
-          goto begin;
-        }
-      }
-
-      char inputString[to_string(n).length() + 1];
-      strcpy(inputString, to_string(n).c_str());
-
-      if (inputString[strlen(inputString) - 1] == '1') {
-        if (inputString[strlen(inputString) - 2] == '1') {
-          cout << to_string(n) << "th\n";
-        } else {
-          cout << to_string(n) << "st\n";
-        }
-      } else if (inputString[strlen(inputString) - 1] == '2') {
-        if (inputString[strlen(inputString) - 2] == '1') {
-          cout << to_string(n) << "th\n";
-        } else {
-          cout << to_string(n) << "nd\n";
-        }
-      } else if (inputString[strlen(inputString) - 1] == '3') {
-        if (inputString[strlen(inputString) - 2] == '1') {
-          cout << to_string(n) << "th\n";
-        } else {
-          cout << to_string(n) << "rd\n";
-        }
+    cout << "\n~Ordinal~\n";
+    int n = getNum(n);
+    if (n > -1 && n < 1000000000) {
+      goto sequence;
+    } else {
+      if (n == -1) {
+        return;
       } else {
-        cout << to_string(n) << "th\n";
+        goto begin;
       }
+    }
+
+sequence:
+    char inputString[to_string(n).length() + 1];
+    strcpy(inputString, to_string(n).c_str());
+
+    if (inputString[strlen(inputString) - 1] == '1') {
+      if (inputString[strlen(inputString) - 2] == '1') {
+        cout << to_string(n) << "th\n";
+      } else {
+        cout << to_string(n) << "st\n";
+      }
+    } else if (inputString[strlen(inputString) - 1] == '2') {
+      if (inputString[strlen(inputString) - 2] == '1') {
+        cout << to_string(n) << "th\n";
+      } else {
+        cout << to_string(n) << "nd\n";
+      }
+    } else if (inputString[strlen(inputString) - 1] == '3') {
+      if (inputString[strlen(inputString) - 2] == '1') {
+        cout << to_string(n) << "th\n";
+      } else {
+        cout << to_string(n) << "rd\n";
+      }
+    } else {
+      cout << to_string(n) << "th\n";
+    }
+
+prompt:
+    cout << "Again?\n   [y] [n]\n: ";
+    getline(cin, input);
+    if (input.compare("y") == 0) {
+      goto begin;
+    } else if (input.compare("n") == 0) {
+      return;
+    } else {
+      goto prompt;
     }
   };
 
   auto triangular = [&]() -> auto {
-    int n, x, z, next, sum, temp;
-    cout << "\n~Triangular Numbers~\n  Provide a # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
-      sum = 0;
-      temp = 0;
-      x = 0;
-      z = 0;
-      n = 0;
-      next = 0;
-      cout << ": ";
-      getline(cin, input);
-      try {
-        n = stoi(input);
-      } catch (...) {
-        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
-          return;
-        } else {
-          goto begin;
-        }
+    cout << "\n~Triangular~\n";
+    int n = getNum(n);
+    if (n > -1 && n < 1000000000) {
+      goto sequence;
+    } else {
+      if (n == -1) {
+        return;
+      } else {
+        goto begin;
       }
+    }
 
-      temp = ((8 * n) + 1);
-      x = (sqrt(temp) - 1) / 2;
-      z = (int) x;
-      next = (z * (z + 1)) / 2;
-      
-      for (unsigned int i = 0; i <= n; i++) {
-        sum += i;
-        if (sum == n) {
-          cout << endl << n << " is triangular\n";
-          break;
-        }
-        if (i == n) {
-          cout << endl << n << " is not triangular, nearest is " << next << endl;
-          break;
-        }
+sequence:
+    // temp = ((8 * n) + 1);
+    // x = (sqrt(temp) - 1) / 2;
+    // z = (int)x;
+    // next = (z * (z + 1)) / 2;
+    int temp = ((8 * n) + 1), x = ((sqrt(temp) - 1) / 2), z = ((int)x), next = ((z * (z + 1)) / 2), sum = 0;
+    for (unsigned int i = 0; i <= n; i++) {
+      sum += i;
+      if (sum == n) {
+        cout << endl << n << " is triangular\n";
+        break;
       }
+      if (i == n) {
+        cout << endl << n << " is not triangular, nearest is " << next << endl;
+        break;
+      }
+    }
+
+prompt:
+    cout << "Again?\n   [y] [n]\n: ";
+    getline(cin, input);
+    if (input.compare("y") == 0) {
+      goto begin;
+    } else if (input.compare("n") == 0) {
+      return;
+    } else {
+      goto prompt;
     }
   };
 
   auto fibonacci = [&]() -> auto {
-    double n, aN, phiL, phis;
-    cout << "\n~Fibonacci Sequence~\n  Provide a # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
-      cout << ": ";
-      getline(cin, input);
-      try {
-        n = stoi(input);
+    cout << "\n~Fibonacci~\n";
+    int n = getNum(n), aN = 0; 
+    if (n > -1 && n < 46) {
+      goto sequence;
+    } else {
+      if (n == -1) {
+        return;
+      } else {
+        goto begin;
       }
-      catch (...) {
-        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
-          return;
-        } else {
-          goto begin;
-        }
-      }
-
-      phiL = (1 + sqrt(5)) / 2;
-      phis = (1 - sqrt(5)) / 2;
-
-      aN = ((pow(phiL, n) - pow(phis, n)) / sqrt(5));
-      cout << "\nThe " << n << " num of Fn => " << aN << endl;
     }
+
+sequence:
+    double phiL = ((1 + sqrt(5)) / 2), phis = ((1 - sqrt(5)) / 2);
+    aN = ((pow(phiL, n) - pow(phis, n)) / sqrt(5));
+    cout << "\nThe " << n << " num of F(n) => " << aN << endl;
       /*fibonacci(int n) nth select
         aN = (Phi^n - phi^n) / sqrt(5)
         Phi = (1 + sqrt(5))/2
@@ -310,83 +378,117 @@ begin:
           F0 = 0
           F1 = 1
           Fn = Fn-1 + Fn-2 while n > 1*/
-    };
+prompt:
+    cout << "Again?\n   [y] [n]\n: ";
+    getline(cin, input);
+    if (input.compare("y") == 0) {
+      goto begin;
+    } else if (input.compare("n") == 0) {
+      return;
+    } else {
+      goto prompt;
+    }
+  };
 
   auto partSum = [&]() -> auto {
-    cout << "\n~Partial Sum~\n   Provide a # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
-      double n = 0, sum = 0;
-      cout << ": ";
-      getline(cin, input);
-      try {
-        n = stoi(input);
-      } catch (...) {
-        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
-          return;
-        } else {
-          goto begin;
-        }
+    cout << "\n~Partial Sum~\n";
+    int n = getNum(n), sum = 0;
+    if (n > -1 && n < 1000000000) {
+      goto sequence;
+    } else {
+      if (n == -1) {
+        return;
+      } else if (n == 0) {
+        goto begin;
+      } else {
+        goto begin;
       }
+    }
 
-      for (unsigned int i = 1; i <= n; i++) {
-        sum += i;
-      }
-      cout << "\nSum from 1 to " << n << " => " << sum << endl;
+sequence:
+    for (unsigned int i = 1; i <= n; i++) {
+      sum += i;
+    }
+    cout << "\nSum from 1 to " << n << " => " << sum << endl;
+
+prompt:
+    cout << "Again?\n   [y] [n]\n: ";
+    getline(cin, input);
+    if (input.compare("y") == 0) {
+      goto begin;
+    } else if (input.compare("n") == 0) {
+      return;
+    } else {
+      goto prompt;
     }
   };
 
   auto squareSum = [&]() -> auto {
-    int n, prod, sum;
-    cout << "\n~Sum of Squares~\n  Provide a # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
-      prod = 1;
-      sum = 0;
-      cout << ": ";
-      getline(cin, input);
-      try {
-        n = stoi(input);
-      } catch (...) {
-        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
-          return;
-        } else {
-          goto begin;
-        }
+    cout << "\n~Sum of Squares~\n";
+    int n = getNum(n), prod = 1, sum = 0;
+    if (n > 0 && n < 1000000000) {
+      goto sequence;
+    } else {
+      if (n == -1) {
+        return;
+      } else if (n == 0) {
+        goto begin;
+      } else {
+        goto begin;
       }
+    }
 
-      for (unsigned int i = 1; i <= n; i++) {
-        prod = i * i;
-        sum += prod;
-      }
+sequence:
+    for (unsigned int i = 1; i <= n; i++)
+    {
+      prod = i * i;
+      sum += prod;
+    }
+    cout << "\nSum of Squares from 1 to " << n << " => " << sum << endl;
 
-      cout << "\nSum of Squares from 1 to " << n << " => " << sum << endl;
+prompt:
+    cout << "Again?\n   [y] [n]\n: ";
+    getline(cin, input);
+    if (input.compare("y") == 0) {
+      goto begin;
+    } else if (input.compare("n") == 0) {
+      return;
+    } else {
+      goto prompt;
     }
   };
 
   auto sum2k1 = [&]() -> auto {
-    int n, res;
-    cout << "\n~Sum Series: 2k+1 ~\n   Provide a # or 'B'\n";
-    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
 begin:
-      res = 0;
-      cout << ": ";
-      getline(cin, input);
-      try {
-        n = stoi(input);
-      } catch (...) {
-        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
-          return;
-        } else {
-          goto begin;
-        }
+    cout << "\n~Sum Series: 2k+1 ~\n";
+    int n = getNum(n), res = 0;
+    if (n > -1 && n < 1000000000) {
+      goto sequence;
+    } else {
+      if (n == -1) {
+        return;
+      } else {
+        goto begin;
       }
+    }
 
-      for (unsigned int i = 1; i <= n; i++) {
-        res += (2 * i) + 1;
-      }
+sequence:
+    for (unsigned int i = 1; i <= n; i++) {
+      res += (2 * i) + 1;
+    }
+    cout << "\nSum of 2k+1 from 1 to " << n << " => " << res << endl;
 
-      cout << "\nSum of 2k+1 from 1 to " << n << " => " << res << endl;
+prompt:
+    cout << "Again?\n   [y] [n]\n: ";
+    getline(cin, input);
+    if (input.compare("y") == 0) {
+      goto begin;
+    } else if (input.compare("n") == 0) {
+      return;
+    } else {
+      goto prompt;
     }
   };
 
@@ -394,11 +496,11 @@ begin:
 
   /*  'Sub-Menu 1'
       ~Select a Method~
-          [1] Collatz     [5] Divisor Check
-          [2] Factorial   [6] Partial Sum
-          [3] Triangular  [7] Square Sum
-          [4] Fibonacci   [8] 2k+1 Sum
-          [Q] Quit        [9] Ordinal
+          [1] Collatz     [6] Divisor Check
+          [2] Factorial   [7] Partial Sum
+          [3] Triangular  [8] Square Sum
+          [4] Fibonacci   [9] 2k+1 Sum
+          [5] Ordinal     [B] Back
 
       **perform related calculations upon a successful selection
   */
@@ -485,43 +587,55 @@ subSel:
             nCk => 'res'
   */
   auto select2 = [&]() -> auto {
-    int n, r;
-    while (input != "B" || input.compare("B") != 0 || input != "b" || input.compare("b") != 0) {
-      cout << "\n~Permutation, Combination, Binomial Coefficient~\n Provide 'n' & 'r' values or 'B' for back.\n";
-getN:
-      cout << "'n' value\n:";
-      getline(cin, input);
-      try {
-        n = stoi(input);
-      } catch (...) {
-        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
-          return;
-        } else {
-          goto getN;
-        }
-      }
-getR:
-      cout << "'r' value\n:";
-      getline(cin, input);
-      try {
-        r = stoi(input);
-      } catch (...) {
-        if (input == "B" || input.compare("B") == 0 || input == "b" || input.compare("b") == 0) {
-          return;
-        } else {
-          goto getR;
-        }
-      }
+begin:
+    cout << "\n~Permutation, Combination, Binomial Coefficient~\n";
+    int n = 0, r = 0;
 
-      if (n < r) {
-        cout << "Provided r of " << r << " is too large.\n";
-        goto getN;
+getN:
+    n = getNum(n);
+    if (n > 0 && n < 1000000000) {
+      goto getR;
+    } else {
+      if (n == -1) {
+        return;
       } else {
-        cout << "\nYou typed: " << n << " & " << r;
-        permutate(n, r);
-        combo(n, r);
-        nCk(n, r);
+        goto begin;
       }
+    }
+   
+getR:
+    r = getNum(r);
+    if (r > 0 && r < 1000000000) {
+      goto sequence;
+    } else {
+      if (n == -1) {
+        return;
+      } else {
+        goto begin;
+      }
+    }
+
+sequence:
+    if (n < r) {
+      cout << "Provided r: " << r << " is too large.\n";
+      cout << "r: " << r << " must be < n: " << n << endl;
+      goto getR;
+    } else {
+      cout << "\nYou typed: " << n << " & " << r;
+      permutate(n, r);
+      combo(n, r);
+      nCk(n, r);
+    }
+
+prompt:
+    cout << "Again?\n   [y] [n]\n: ";
+    getline(cin, input);
+    if (input.compare("y") == 0) {
+      goto begin;
+    } else if (input.compare("n") == 0) {
+      return;
+    } else {
+      goto prompt;
     }
   };
 
