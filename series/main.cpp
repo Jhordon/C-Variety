@@ -3,10 +3,7 @@
 */
 
 /* 
-  TODO:
-    - full implementation for isDivisible() w/ basecases brilliant.org/wiki/divisibility-rules
-
-    challenge: clear terminal after completing a fn() 
+  challenge: clear terminal after completing a fn() 
 */
 
 #include <iostream>
