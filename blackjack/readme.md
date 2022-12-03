@@ -1,3 +1,3 @@
 # /blackjack
 
-Casino card game planned for development.
+"Check back later for an update"
