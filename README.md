@@ -21,3 +21,11 @@ This repository contains programs completed throughout undergraduate and indepen
 - Terminal Acclimation
 - CMake, Markdown, & Bash Utility
 - "Various mathematical topics"
+
+## Viewing the Repo
+
+Ensure your machine has both [CMake](https://cmake.org/download/) and **g++ compiler** installed to get the best experience. To view this repository and its contents on your machine locally run the following command in a terminal session:
+
+```terminal
+git clone https://github.com/Jhordon/C-Variety.git
+```
