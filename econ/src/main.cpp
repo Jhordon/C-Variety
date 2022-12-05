@@ -1,60 +1,81 @@
-/* C++ : PFB-Calculator
-    "Present the user with a generalized breakdown of
-    life expenses for their income." - @Jhordon
+/* C++ : Personal Finance Calculator
+    "Presents the user with a generalized breakdown of
+    life expenses from a specified income." - @Jhordon
 */
 
-#include "pfbcalc.h"
+#include "pfcalc.h"
 #include <iostream>
 #include <vector>
 #include <sstream>
 
 using namespace std;
 
-int main() {
+int main()
+{
+    /* Setting variables for use in program */
     double num;
     string input, f;
     vector<string> entry;
     Income userIncome;
 
-    cout << "~PFB-Calculator~\n";
-    begin:
-    cout << "Type your income followed by a specifier:\n-h hourly  -w weekly  -m monthly  -y yearly\n:";
-    
-    grabEntry:
+    /* Title and dialogue */
+    cout << "~Personal Finance Calculator~\n";
+begin:
+    cout << "Type your income followed by a specifier:\n-h hourly   -y yearly. To quit type Q.\n:";
+
+grabEntry:
+    /* Grab the typed input */
     getline(cin, input);
-    if (input.empty()) {
+    if (input.empty())
+    {
         cout << ":";
         goto grabEntry;
     }
 
+    /* Parsing the input */
     stringstream line(input);
 
-    while (line.good()) {
+    while (line.good())
+    {
         getline(line, input, ' ');
         entry.push_back(input);
     }
 
-    try {
-        if (entry.at(0).compare("Q") == 0) {
+    try
+    {
+        if (entry.at(0).compare("Q") == 0 || entry.at(0).compare("q") == 0)
+        {
+            cout << "Bye!\n";
             exit(0);
-        } else {
-            if (entry.at(1) == " ") {
+        }
+        else
+        {
+            if (entry.at(1) == " ")
+            {
                 cout << "\nFlag left blank.\n";
                 entry.clear();
                 goto begin;
-            } else {
+            }
+            else
+            {
                 f = entry.at(1);
-                if (f.compare("-y") == 0 || f.compare("-m") == 0 || f.compare("-w") == 0 || f.compare("-h") == 0) {
-                    try {
+                if (f.compare("-y") == 0 || f.compare("-h") == 0)
+                {
+                    try
+                    {
                         num = stod(entry.at(0));
                         userIncome.setFlag(f);
                         userIncome.setIncome(num);
-                    } catch (exception e) {
+                    }
+                    catch (exception e)
+                    {
                         cout << "\nIncorrect income specified.\n";
                         entry.clear();
                         goto begin;
                     }
-                } else {
+                }
+                else
+                {
                     cout << "\nIncorrect flag specified.\n";
                     entry.clear();
                     goto begin;
@@ -62,12 +83,17 @@ int main() {
             }
         }
 
-        cout << "\nYou typed:" << num << " " << f << endl;
-    } catch (exception e) {
-        if (entry.size() < 2 || entry.size() > 2) {
+        // cout << "\nYou typed:" << num << " " << f << endl;
+    }
+    catch (exception e)
+    {
+        if (entry.size() < 2 || entry.size() > 2)
+        {
             entry.clear();
             goto begin;
-        } else {
+        }
+        else
+        {
             entry.clear();
             goto begin;
         }
